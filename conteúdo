@@ -1,0 +1,67 @@
+import streamlit as st
+import mysql.connector
+
+# Configurações do banco de dados
+db_config = {
+    'host': 'siscof.myscriptcase.com',
+    'database': 'siscofmy_paysmart',
+    'user': 'paysmart',
+    'password': 'teste12345'
+}
+
+# Função para conectar ao banco de dados
+def get_db_connection():
+    connection = mysql.connector.connect(**db_config)
+    return connection
+
+# Função para executar uma consulta
+def run_query(query):
+    connection = get_db_connection()
+    cursor = connection.cursor()
+    cursor.execute(query)
+    result = cursor.fetchall()
+    cursor.close()
+    connection.close()
+    return result
+
+# Função para exibir dados detalhados
+def show_detailed_data():
+    st.write("Dados Detalhados")
+    query = "SELECT * FROM sua_tabela_detalhada"  # Substitua pelo nome da sua tabela
+    data = run_query(query)
+    st.write(data)
+
+# Função para exibir dados resumidos
+def show_summary_data():
+    st.write("Dados Resumidos")
+    query = "SELECT * FROM sua_tabela_resumida"  # Substitua pelo nome da sua tabela
+    data = run_query(query)
+    st.write(data)
+
+# Menu de navegação
+menu = ["Master Nacional", "Master Internacional", "Sair"]
+submenu_nacional = ["Detalhado", "Resumido"]
+submenu_internacional = ["Detalhado", "Resumido"]
+
+st.sidebar.title("Menu")
+choice = st.sidebar.selectbox("Escolha uma opção", menu)
+
+if choice == "Master Nacional":
+    sub_choice = st.sidebar.selectbox("Escolha uma opção", submenu_nacional)
+    if sub_choice == "Detalhado":
+        show_detailed_data()
+    elif sub_choice == "Resumido":
+        show_summary_data()
+elif choice == "Master Internacional":
+    sub_choice = st.sidebar.selectbox("Escolha uma opção", submenu_internacional)
+    if sub_choice == "Detalhado":
+        show_detailed_data()
+    elif sub_choice == "Resumido":
+        show_summary_data()
+elif choice == "Sair":
+    st.write("Você saiu do sistema.")
+
+# Executar o aplicativo Streamlit
+if __name__ == "__main__":
+    st.title("Sistema de Relatórios")
+    st.write("Bem-vindo ao sistema de relatórios.")
